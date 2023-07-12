@@ -7,8 +7,8 @@
 
 ### After Finishing Issue
 - `git add <changes made>`
-- `git commit -m "message""`
-- `git push -u origin <your name>
+- `git commit -m "message"`
+- `git push -u origin <your name>`
 
 ### To Pull Changes 
 - `git checkout develop`
