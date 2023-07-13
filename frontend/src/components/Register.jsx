@@ -1,13 +1,34 @@
 import logo from "../assets/pflogo.png"
 import { BackGround } from "./Backgroud"
-import { useState } from "react"
+import { useState } from "react";
+import CustomModal from "./CustomModal";
+
 
 export const Register = () => {
+    const [showModal, setShowModal] = useState(false);
+
 
     return (
         <>
             <BackGround>
+                <CustomModal visible={showModal} onClose={() => setShowModal(false)}>
+                    <div className="bg-white w-96 h-[50%] p-5 rounded flex flex-col justify-center items-center gap-10">
+                        <h1 className="font-bold text-3xl text-indigo-500">
+        Enter OTP
+                        </h1>
+                        <input
+                            placeholder="OTP"
+                            type="text"
+                            className="w-[70%] border border-gray-500 p-1 mt-2 rounded-md "
+                        />
+                        <button className="mt-2 py-2 px-5 bg-indigo-500 text-white rounded-md hover:bg-indigo-600">
+                            Submit
+                        </button>
+                    </div>
+                </CustomModal>
+
                 <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 rounded-lg">
+
                     <div className="sm:mx-auto sm:w-full sm:max-w-sm">
                         <img
                             className="mx-auto h-10 w-auto"
@@ -20,7 +41,7 @@ export const Register = () => {
                     </div>
 
                     <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                        <form className="space-y-6">
+                        <div className="space-y-6" >
                             <div>
                                 <div className="flex ">
                                     <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
@@ -65,13 +86,13 @@ export const Register = () => {
                             <div>
                                 <button
                                     type="submit"
-                                    className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-        
+                                    className="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                    onClick={() => setShowModal(true)}
                                 >
                                     Register
                                 </button>
                             </div>
-                        </form>
+                        </div>
                         <p className="mt-10 text-center text-sm text-gray-500">
                             Already a User ?
                             <a href="/login" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
@@ -84,3 +105,5 @@ export const Register = () => {
         </>
     )
 }
+
+
