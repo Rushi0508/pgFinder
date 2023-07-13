@@ -2,12 +2,82 @@ import logo from "../assets/pflogo.png"
 import { BackGround } from "./Backgroud"
 import { useState } from "react";
 import CustomModal from "./CustomModal";
+import "react-toastify/dist/ReactToastify.css";
+import {  toast } from "react-toastify";
+import axios from 'axios';
+import { ToastContainer } from "react-toastify";
+import { getToastOptions } from "../assets/toastOptions";
 
 
 export const Register = () => {
     const [showModal, setShowModal] = useState(false);
+    const [user, setUser] = useState({
+        name:'',
+        phone:'',
+        email: '',
+        password:'',
+        confirmpassword:''
+      });
 
+      const isEmptyUserField = (obj)=>{
+        for (let key in obj) {
+            if (obj.hasOwnProperty(key)) {
+              if (obj[key] === '') {
+                return true;
+              }
+            }
+          }
+          return false;
+      }
+    
+      const handleValidation = ({
+        name:Name,
+        phone:PhoneNumber,
+        email: Email,
+        password: Password,
+        confirmpassword: ConfirmPassword,
+      }) => {
+        const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/;
 
+        if(isEmptyUserField(user)){
+            toast.error("All Fields are mandatory", getToastOptions);
+        }
+        else if (Password !== ConfirmPassword) {
+          // console.log("1");
+          toast.error("Password didn't match", getToastOptions);
+          return false;
+        } else if (Password.length <= 4) {
+          // console.log("4");
+          toast.error("Password Length should be greater than 4", getToastOptions);
+          return false;
+        } else if (Name.length <= 3) {
+            // console.log("2");
+            toast.error("Name should be greater than 3 characters.", toastOptions);
+            return false; 
+        } else if (PhoneNumber.toString().length !== 10 ) {
+            // console.log("2");
+            toast.error("Phone muber should be 10 length.", getToastOptions);
+            return false; 
+        }
+        else if (!emailRegex.test(Email)) {
+          // console.log("5");
+          toast.error("Email format should be right", getToastOptions);
+          return false;
+        }
+        // console.log("6");
+        return true;
+      };
+
+    const handleRegister = ()=>{
+        // console.log("registerclick");
+        if(handleValidation(user)){
+            const {data:user} = axios.post("http://localhost:5000/auth/signup", user);
+            if(user.id !="" || user.id != null || user.id != undefined)
+            {
+                // send otp api pending 
+            }
+        }
+    }
     return (
         <>
             <BackGround>
@@ -27,7 +97,7 @@ export const Register = () => {
                     </div>
                 </CustomModal>
 
-                <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 rounded-lg">
+                <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-2 rounded-lg">
 
                     <div className="sm:mx-auto sm:w-full sm:max-w-sm">
                         <img
@@ -35,13 +105,49 @@ export const Register = () => {
                             src={logo}
                             alt="Your Company"
                         />
-                        <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+                        <h2 className=" text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
                             Create a Account
                         </h2>
                     </div>
 
                     <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
                         <div className="space-y-6" >
+                            <div>
+                                <div className="flex ">
+                                    <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
+                                        Name
+                                    </label>
+                                </div>
+                                <div className="mt-2">
+                                    <input
+                                        id="name"
+                                        name="name"
+                                        type="text"
+                                        value={user.name}
+                                        onChange={(e)=>setUser({...user, [e.target.name]:e.target.value})}
+                                        required
+                                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    />
+                                </div>
+                            </div>
+                            <div>
+                                <div className="flex ">
+                                    <label htmlFor="phone" className="block text-sm font-medium leading-6 text-gray-900">
+                                        Phone number
+                                    </label>
+                                </div>
+                                <div className="mt-2">
+                                    <input
+                                        id="phone"
+                                        name="phone"
+                                        type="number"
+                                        value={user.phone}
+                                        onChange={(e)=>setUser({...user, [e.target.name]:e.target.value})}
+                                        required
+                                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    />
+                                </div>
+                            </div>
                             <div>
                                 <div className="flex ">
                                     <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
@@ -53,31 +159,44 @@ export const Register = () => {
                                         id="email"
                                         name="email"
                                         type="email"
-                                        autoComplete="email"
+                                        value={user.email}
+                                        onChange={(e)=>setUser({...user, [e.target.name]:e.target.value})}
                                         required
                                         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                     />
                                 </div>
                             </div>
-
-
                             <div>
                                 <div className="flex items-center justify-between">
                                     <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
                                         Password
                                     </label>
-                                    <div className="text-sm">
-                                        <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">
-                                            Forgot password?
-                                        </a>
-                                    </div>
                                 </div>
                                 <div className="mt-2">
                                     <input
                                         id="password"
                                         name="password"
                                         type="password"
-                                        autoComplete="current-password"
+                                        value={user.password}
+                                        onChange={(e)=>setUser({...user, [e.target.name]:e.target.value})}
+                                        required
+                                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    />
+                                </div>
+                            </div>
+                            <div>
+                                <div className="flex items-center justify-between">
+                                    <label htmlFor="confirmpassword" className="block text-sm font-medium leading-6 text-gray-900">
+                                        Confirm Password
+                                    </label>
+                                </div>
+                                <div className="mt-2">
+                                    <input
+                                        id="confirmpassword"
+                                        name="confirmpassword"
+                                        type="password"
+                                        value={user.confirmpassword}
+                                        onChange={(e)=>setUser({...user, [e.target.name]:e.target.value})}
                                         required
                                         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                     />
@@ -87,7 +206,7 @@ export const Register = () => {
                                 <button
                                     type="submit"
                                     className="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                                    onClick={() => setShowModal(true)}
+                                    onClick={handleRegister}
                                 >
                                     Register
                                 </button>
@@ -102,6 +221,7 @@ export const Register = () => {
                     </div>
                 </div>
             </BackGround>
+            <ToastContainer />
         </>
     )
 }

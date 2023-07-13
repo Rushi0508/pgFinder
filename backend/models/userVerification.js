@@ -3,7 +3,10 @@ import mongoose from "mongoose"
 const Schema = mongoose.Schema;
 
 const userVerificationSchema = new Schema({
-    userId: String,
+    userId: [{
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    }],
     otp: String,
     createdAt: {
         type: Date,
@@ -14,5 +17,4 @@ const userVerificationSchema = new Schema({
     }
 })
 
-const UserVerification = mongoose.model("UserVerification", userVerificationSchema);
-export default UserVerification
+exports.UserVerification = mongoose.model("UserVerification", userVerificationSchema);

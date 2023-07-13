@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 
@@ -19,10 +19,10 @@ const userSchema = new Schema({
         type: String,
         default: false
     },
-    property: {
+    property: [{
         type: Schema.Types.ObjectId,
         ref: 'Property'
-    },
+    }],
     createdAt: {
         type: Date,
         default: Date.now()
@@ -33,5 +33,17 @@ const userSchema = new Schema({
     }
 });
 
-const User =  mongoose.model("User", userSchema);
-export default User
+
+const virtualId  = userSchema.virtual('userId');
+virtualId.get(function(){
+    return this._id;
+})
+
+userSchema.set('toJSON',{
+    virtuals: true,
+    versionKey: false,
+    transform: function (doc,ret) { delete ret._id}
+})
+
+
+exports.User =  mongoose.model("User", userSchema);
