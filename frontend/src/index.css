@@ -1,3 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.input-field{
+    @apply backdrop-filter backdrop-blur bg-gray-300 bg-opacity-5 hover:bg-opacity-10
+}
+.submit-button {
+    @apply bg-indigo-500 bg-opacity-20 hover:bg-opacity-30
+}
