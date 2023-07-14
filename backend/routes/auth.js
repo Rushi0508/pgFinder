@@ -1,10 +1,13 @@
-const { SendOtp, createUser, loginUser } = require('../controllers/auth');
+import express from 'express'
+import { register, verifyOTP, login } from '../controllers/auth'
 
-const router = require('express').Router();
+const router = express.Router();
 
-router.post("/signup",  createUser);
-router.post("/SendOtp",  SendOtp);
-router.post("/login", loginUser);
-
-
-module.exports = router;
+router.route('/api/auth/register')
+    .post(register)
+router.route('/api/auth/verifyOTP')
+    .post(verifyOTP)
+router.route('/api/auth/login')
+    .post(login)
+    
+export default router

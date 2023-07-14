@@ -1,13 +1,15 @@
-const express = require('express');
-const app = express();
-const mongoose = require('mongoose');
-const cors = require('cors');
+import express from 'express'
+import mongoose from 'mongoose'
+import cors from 'cors'
+import authRoutes from "./routes/auth"
+import dotenv from 'dotenv'
 
-const authRoutes = require('./routes/auth');
+dotenv.config()
+const app = express()
 
 app.use(express.json());
 app.use(cors());
-app.use("/auth", authRoutes);
+app.use(authRoutes);
 
 
 //DB CONNECT

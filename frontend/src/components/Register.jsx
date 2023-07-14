@@ -7,9 +7,10 @@ import {  toast } from "react-toastify";
 import axios from 'axios';
 import { ToastContainer } from "react-toastify";
 import { getToastOptions } from "../assets/toastOptions";
-
+import { useNavigate } from "react-router-dom";
 
 export const Register = () => {
+    const navigate = useNavigate();
     const [showModal, setShowModal] = useState(false);
     const [user, setUser] = useState({
         name:'',
@@ -17,7 +18,11 @@ export const Register = () => {
         email: '',
         password:'',
         confirmpassword:''
-      });
+    });
+    const [verify, setVerify] = useState({
+        userId: "",
+        otp: ""
+    })
 
       const isEmptyUserField = (obj)=>{
         for (let key in obj) {
@@ -43,39 +48,47 @@ export const Register = () => {
             toast.error("All Fields are mandatory", getToastOptions);
         }
         else if (Password !== ConfirmPassword) {
-          // console.log("1");
           toast.error("Password didn't match", getToastOptions);
           return false;
         } else if (Password.length <= 4) {
-          // console.log("4");
           toast.error("Password Length should be greater than 4", getToastOptions);
           return false;
         } else if (Name.length <= 3) {
-            // console.log("2");
             toast.error("Name should be greater than 3 characters.", toastOptions);
             return false; 
         } else if (PhoneNumber.toString().length !== 10 ) {
-            // console.log("2");
             toast.error("Phone muber should be 10 length.", getToastOptions);
             return false; 
         }
         else if (!emailRegex.test(Email)) {
-          // console.log("5");
           toast.error("Email format should be right", getToastOptions);
           return false;
         }
-        // console.log("6");
         return true;
       };
 
-    const handleRegister = ()=>{
-        // console.log("registerclick");
+    const handleRegister = async ()=>{
         if(handleValidation(user)){
-            const {data:user} = axios.post("http://localhost:5000/auth/signup", user);
-            if(user.id !="" || user.id != null || user.id != undefined)
-            {
-                // send otp api pending 
+            const {data} = await axios.post(
+                "http://localhost:5000/api/auth/register",
+                user
+            );
+            if(data.status == "Pending"){
+                setShowModal(true)
+                setVerify({
+                    ...verify,userId:data.data.userId
+                })
             }
+        }
+    }
+    const handleOTP = async ()=>{
+
+        const {data} = await axios.post(
+            "http://localhost:5000/api/auth/verifyOTP",
+            verify
+        )
+        if(data.status){
+            navigate('/home')
         }
     }
     return (
@@ -89,9 +102,10 @@ export const Register = () => {
                         <input
                             placeholder="OTP"
                             type="text"
+                            value={verify.otp} onChange={(e)=>setVerify({...verify,[e.target.name]:e.target.value})} name="otp"
                             className="w-[70%] border border-gray-500 p-1 mt-2 rounded-md "
                         />
-                        <button className="mt-2 py-2 px-5 bg-indigo-500 text-white rounded-md hover:bg-indigo-600">
+                        <button onClick={handleOTP}  className="mt-2 py-2 px-5 bg-indigo-500 text-white rounded-md hover:bg-indigo-600">
                             Submit
                         </button>
                     </div>
@@ -140,7 +154,7 @@ export const Register = () => {
                                     <input
                                         id="phone"
                                         name="phone"
-                                        type="number"
+                                        type="text"
                                         value={user.phone}
                                         onChange={(e)=>setUser({...user, [e.target.name]:e.target.value})}
                                         required
