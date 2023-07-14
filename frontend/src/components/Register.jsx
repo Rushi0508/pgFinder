@@ -1,17 +1,19 @@
 import logo from "../assets/pflogo.png"
 import { BackGround } from "./Backgroud"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CustomModal from "./CustomModal";
-import "react-toastify/dist/ReactToastify.css";
-import {  toast } from "react-toastify";
 import axios from 'axios';
-import { ToastContainer } from "react-toastify";
 import { getToastOptions } from "../assets/toastOptions";
 import { useNavigate } from "react-router-dom";
+import toast, { Toaster } from 'react-hot-toast';
+import { SendOtp } from "./SendOtp";
+
 
 export const Register = () => {
     const navigate = useNavigate();
     const [showModal, setShowModal] = useState(false);
+    const [registerState, setRegisterState] = useState(null);
+    const [toastId, setToastId] = useState(null);
     const [user, setUser] = useState({
         name:'',
         phone:'',
@@ -43,9 +45,9 @@ export const Register = () => {
         confirmpassword: ConfirmPassword,
       }) => {
         const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/;
-
         if(isEmptyUserField(user)){
             toast.error("All Fields are mandatory", getToastOptions);
+            return false;
         }
         else if (Password !== ConfirmPassword) {
           toast.error("Password didn't match", getToastOptions);
@@ -67,52 +69,50 @@ export const Register = () => {
         return true;
       };
 
+      useEffect(()=>{
+        if(registerState!==null){
+            if(registerState=="pending")
+            {
+                const toastuniqukey = toast.loading('Wait for responce');
+                setToastId(toastuniqukey);
+            }
+            else{
+                toast.dismiss(toastId);
+            }
+        }
+      },[registerState])
+
     const handleRegister = async ()=>{
         if(handleValidation(user)){
+            setRegisterState("pending");
             const {data} = await axios.post(
                 "http://localhost:5000/api/auth/register",
                 user
             );
-            if(data.status == "Pending"){
-                setShowModal(true)
+            console.log(data);
+            setRegisterState("success");
+            if(data.hasOwnProperty('errors'))
+            {
+                toast.error(data.errors, getToastOptions);
+            }
+            else{
                 setVerify({
                     ...verify,userId:data.data.userId
                 })
+                toast.success("you are sucessfully create acc please verify", getToastOptions);
+                setTimeout(() => {
+                    setShowModal(true);
+                }, 2000);
             }
-        }
-    }
-    const handleOTP = async ()=>{
-
-        const {data} = await axios.post(
-            "http://localhost:5000/api/auth/verifyOTP",
-            verify
-        )
-        if(data.status){
-            navigate('/home')
         }
     }
     return (
         <>
             <BackGround>
                 <CustomModal visible={showModal} onClose={() => setShowModal(false)}>
-                    <div className="bg-white w-96 h-[50%] p-5 rounded flex flex-col justify-center items-center gap-10">
-                        <h1 className="font-bold text-3xl text-indigo-500">
-        Enter OTP
-                        </h1>
-                        <input
-                            placeholder="OTP"
-                            type="text"
-                            value={verify.otp} onChange={(e)=>setVerify({...verify,[e.target.name]:e.target.value})} name="otp"
-                            className="w-[70%] border border-gray-500 p-1 mt-2 rounded-md "
-                        />
-                        <button onClick={handleOTP}  className="mt-2 py-2 px-5 bg-indigo-500 text-white rounded-md hover:bg-indigo-600">
-                            Submit
-                        </button>
-                    </div>
+                <SendOtp userEmail={user.email} userverify={verify} />
                 </CustomModal>
-
                 <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-2 rounded-lg">
-
                     <div className="sm:mx-auto sm:w-full sm:max-w-sm">
                         <img
                             className="mx-auto h-10 w-auto"
@@ -235,7 +235,7 @@ export const Register = () => {
                     </div>
                 </div>
             </BackGround>
-            <ToastContainer />
+            <Toaster />
         </>
     )
 }
