@@ -1,8 +1,12 @@
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
 
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
+    name: {
+        type: String,
+        required: [true, "Name is required"]
+    },
     email: {
         type: String,
         required: [true, "Email is required"]
@@ -16,7 +20,7 @@ const userSchema = new Schema({
         required: [true, "Phone number is required"]
     },
     verified:{
-        type: String,
+        type: Boolean,
         default: false
     },
     property: [{
@@ -34,16 +38,5 @@ const userSchema = new Schema({
 });
 
 
-const virtualId  = userSchema.virtual('userId');
-virtualId.get(function(){
-    return this._id;
-})
-
-userSchema.set('toJSON',{
-    virtuals: true,
-    versionKey: false,
-    transform: function (doc,ret) { delete ret._id}
-})
-
-
-exports.User =  mongoose.model("User", userSchema);
+const User =  mongoose.model("User", userSchema);
+export default User
