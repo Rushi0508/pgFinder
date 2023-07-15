@@ -1,11 +1,87 @@
+import { useState } from "react";
 import logo from "../assets/pflogo.png"
 import { BackGround } from "./Backgroud"
+
+import { useNavigate } from "react-router-dom";
+import CustomModal from "./CustomModal";
+import { SendOtp } from "./SendOtp";
+import toast, { Toaster } from 'react-hot-toast';
+
+import axios from "axios";
+import { getToastOptions } from "../assets/toastOptions";
+
 import { Link } from "react-router-dom"
 
+
 export const Login = () => {
+    const navigate = useNavigate();
+    const [showModal, setShowModal] = useState(false);
+    // const [registerState, setRegisterState] = useState(null);
+    const [toastId, setToastId] = useState(null);
+    const [loginUser, setLoginUser] = useState({
+        email: '',
+        password:''
+    });
+    const [verify, setVerify] = useState({
+        userId: "",
+        otp: ""
+    })
+
+    const isEmptyUserField = (obj)=>{
+        for (let key in obj) {
+            if (obj.hasOwnProperty(key)) {
+              if (obj[key] === '') {
+                return true;
+              }
+            }
+          }
+          return false;
+      }
+
+    const handleValidate = ({email:Email, password: Password})=>{
+
+        const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/;
+        if(isEmptyUserField(loginUser)){
+            toast.error("All Fields are mandatory", getToastOptions);
+            return false;
+        }
+        else if (!emailRegex.test(Email)) {
+            toast.error("Email format should be right", getToastOptions);
+            return false;
+        }
+        return true;
+    }
+
+    const handleLogin = async(e)=>{
+        e.preventDefault();
+
+        if(handleValidate(loginUser))
+        {
+            const {data} = await axios.post("http://localhost:5000/api/auth/login", loginUser);
+            console.log(data);
+            if(data.hasOwnProperty("errors")){
+                toast.error(data.errors, getToastOptions);
+            }
+            else{
+                setVerify({
+                    ...verify,userId:data.data.userId
+                })
+                toast.success("you are Not verified user kindly please verify", getToastOptions);
+                setTimeout(() => {
+                    setShowModal(true);
+                }, 2000);
+            }
+        }
+    };
+
+
+
     return (
         <>
             <BackGround>
+                <CustomModal visible={showModal} onClose={() => setShowModal(false)}>
+                    <SendOtp userEmail={loginUser.email} userverify={verify}  />
+                </CustomModal>
                 <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 rounded-lg">
                     <div className="sm:mx-auto sm:w-full sm:max-w-sm">
                         <img
@@ -31,8 +107,8 @@ export const Login = () => {
                                         id="email"
                                         name="email"
                                         type="email"
-                                        autoComplete="email"
-                                        required
+                                        value={loginUser.email}
+                                        onChange={(e)=>setLoginUser({...loginUser,[e.target.name]:e.target.value})}
                                         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 input-field"
                                     />
                                 </div>
@@ -55,8 +131,8 @@ export const Login = () => {
                                         id="password"
                                         name="password"
                                         type="password"
-                                        autoComplete="current-password"
-                                        required
+                                        value={loginUser.password}
+                                        onChange={(e)=>setLoginUser({...loginUser,[e.target.name]:e.target.value})}
                                         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 input-field"
                                     />
                                 </div>
@@ -64,6 +140,7 @@ export const Login = () => {
                             <div>
                                 <button
                                     type="submit"
+                                    onClick={handleLogin}
                                     className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                                 >
                                     Sign in
@@ -79,6 +156,7 @@ export const Login = () => {
                     </div>
                 </div>
             </BackGround>
+            <Toaster />
         </>
     )
 }
