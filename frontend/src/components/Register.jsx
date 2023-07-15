@@ -7,6 +7,7 @@ import { getToastOptions } from "../assets/toastOptions";
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from 'react-hot-toast';
 import { SendOtp } from "./SendOtp";
+import { Link } from "react-router-dom";
 
 
 export const Register = () => {
@@ -228,9 +229,10 @@ export const Register = () => {
                         </div>
                         <p className="mt-10 text-center text-sm text-gray-500">
                             Already a User ?
-                            <a href="/login" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
+                            <Link to="/login" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
+                                
                                 Login
-                            </a>
+                            </Link>
                         </p>
                     </div>
                 </div>
