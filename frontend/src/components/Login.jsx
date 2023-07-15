@@ -62,6 +62,9 @@ export const Login = () => {
             if(data.hasOwnProperty("errors")){
                 toast.error(data.errors, getToastOptions);
             }
+            else if(data.hasOwnProperty("data")){
+                navigate('/home');
+            }
             else{
                 setVerify({
                     ...verify,userId:data.data.userId
