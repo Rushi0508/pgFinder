@@ -11,96 +11,98 @@ import { Link } from "react-router-dom";
 
 
 export const Register = () => {
+    const token = localStorage.getItem('jwt_token');
     const navigate = useNavigate();
     const [showModal, setShowModal] = useState(false);
     const [registerState, setRegisterState] = useState(null);
     const [toastId, setToastId] = useState(null);
     const [user, setUser] = useState({
-        name:'',
-        phone:'',
+        name: '',
+        phone: '',
         email: '',
-        password:'',
-        confirmpassword:''
+        password: '',
+        confirmpassword: ''
     });
     const [verify, setVerify] = useState({
         userId: "",
         otp: ""
     })
 
-      const isEmptyUserField = (obj)=>{
+    const isEmptyUserField = (obj) => {
         for (let key in obj) {
             if (obj.hasOwnProperty(key)) {
-              if (obj[key] === '') {
-                return true;
-              }
+                if (obj[key] === '') {
+                    return true;
+                }
             }
-          }
-          return false;
-      }
-    
-      const handleValidation = ({
-        name:Name,
-        phone:PhoneNumber,
+        }
+        return false;
+    }
+
+    const handleValidation = ({
+        name: Name,
+        phone: PhoneNumber,
         email: Email,
         password: Password,
         confirmpassword: ConfirmPassword,
-      }) => {
+    }) => {
         const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/;
-        if(isEmptyUserField(user)){
+        if (isEmptyUserField(user)) {
             toast.error("All Fields are mandatory", getToastOptions);
             return false;
         }
         else if (Password !== ConfirmPassword) {
-          toast.error("Password didn't match", getToastOptions);
-          return false;
+            toast.error("Password didn't match", getToastOptions);
+            return false;
         } else if (Password.length <= 4) {
-          toast.error("Password Length should be greater than 4", getToastOptions);
-          return false;
+            toast.error("Password Length should be greater than 4", getToastOptions);
+            return false;
         } else if (Name.length <= 3) {
             toast.error("Name should be greater than 3 characters.", toastOptions);
-            return false; 
-        } else if (PhoneNumber.toString().length !== 10 ) {
+            return false;
+        } else if (PhoneNumber.toString().length !== 10) {
             toast.error("Phone muber should be 10 length.", getToastOptions);
-            return false; 
+            return false;
         }
         else if (!emailRegex.test(Email)) {
-          toast.error("Email format should be right", getToastOptions);
-          return false;
+            toast.error("Email format should be right", getToastOptions);
+            return false;
         }
         return true;
-      };
+    };
 
-      useEffect(()=>{
-        if(registerState!==null){
-            if(registerState=="pending")
-            {
-                const toastuniqukey = toast.loading('Wait for responce');
+    useEffect(() => {
+        if (token) {
+            navigate(-1);
+        }
+        if (registerState !== null) {
+            if (registerState == "Pending") {
+                const toastuniqukey = toast.loading('Processing');
                 setToastId(toastuniqukey);
             }
-            else{
+            else {
                 toast.dismiss(toastId);
             }
         }
-      },[registerState])
+    }, [registerState])
 
-    const handleRegister = async ()=>{
-        if(handleValidation(user)){
-            setRegisterState("pending");
-            const {data} = await axios.post(
+    const handleRegister = async () => {
+        if (handleValidation(user)) {
+            setRegisterState("Pending");
+            const { data } = await axios.post(
                 "http://localhost:5000/api/auth/register",
                 user
             );
             console.log(data);
             setRegisterState("success");
-            if(data.hasOwnProperty('errors'))
-            {
+            if (data.hasOwnProperty('errors')) {
                 toast.error(data.errors, getToastOptions);
             }
-            else{
+            else {
                 setVerify({
-                    ...verify,userId:data.data.userId
+                    ...verify, userId: data.data.userId
                 })
-                toast.success("you are sucessfully create acc please verify", getToastOptions);
+                toast.success("Registered Successfully", getToastOptions);
                 setTimeout(() => {
                     setShowModal(true);
                 }, 2000);
@@ -110,8 +112,8 @@ export const Register = () => {
     return (
         <>
             <BackGround>
-                <CustomModal visible={showModal} onClose={() => setShowModal(false)}>
-                <SendOtp userEmail={user.email} userverify={verify} />
+                <CustomModal visible={showModal}>
+                    <SendOtp userEmail={user.email} userverify={verify} />
                 </CustomModal>
                 <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-2 rounded-lg">
                     <div className="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -139,7 +141,7 @@ export const Register = () => {
                                         name="name"
                                         type="text"
                                         value={user.name}
-                                        onChange={(e)=>setUser({...user, [e.target.name]:e.target.value})}
+                                        onChange={(e) => setUser({ ...user, [e.target.name]: e.target.value })}
                                         required
                                         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 input-field"
                                     />
@@ -157,7 +159,7 @@ export const Register = () => {
                                         name="phone"
                                         type="text"
                                         value={user.phone}
-                                        onChange={(e)=>setUser({...user, [e.target.name]:e.target.value})}
+                                        onChange={(e) => setUser({ ...user, [e.target.name]: e.target.value })}
                                         required
                                         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 input-field"
                                     />
@@ -175,7 +177,7 @@ export const Register = () => {
                                         name="email"
                                         type="email"
                                         value={user.email}
-                                        onChange={(e)=>setUser({...user, [e.target.name]:e.target.value})}
+                                        onChange={(e) => setUser({ ...user, [e.target.name]: e.target.value })}
                                         required
                                         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 input-field"
                                     />
@@ -193,7 +195,7 @@ export const Register = () => {
                                         name="password"
                                         type="password"
                                         value={user.password}
-                                        onChange={(e)=>setUser({...user, [e.target.name]:e.target.value})}
+                                        onChange={(e) => setUser({ ...user, [e.target.name]: e.target.value })}
                                         required
                                         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 input-field"
                                     />
@@ -211,7 +213,7 @@ export const Register = () => {
                                         name="confirmpassword"
                                         type="password"
                                         value={user.confirmpassword}
-                                        onChange={(e)=>setUser({...user, [e.target.name]:e.target.value})}
+                                        onChange={(e) => setUser({ ...user, [e.target.name]: e.target.value })}
                                         required
                                         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 input-field"
                                     />
@@ -230,7 +232,7 @@ export const Register = () => {
                         <p className="mt-10 text-center text-sm text-gray-500">
                             Already a User ?
                             <Link to="/login" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
-                                
+
                                 Login
                             </Link>
                         </p>

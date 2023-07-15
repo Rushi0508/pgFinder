@@ -39,10 +39,12 @@ export const SendOtp = ({userEmail, userverify}) => {
             const {data} = await axios.post("http://localhost:5000/api/auth/verifyOTP",sendVerifyOtp);
             console.log(data);
             if(data.status){
+                localStorage.setItem('jwt_token', data.userAuthToken);
+                localStorage.setItem('user_id', data.data._id);
                 navigate('/home');
             }
             else{
-                toast.error("Your Otp is Wrong try again using login",{ position: "top-center",
+                toast.error("Invalid code",{ position: "top-center",
                 duration: 5000});
             }
         }
