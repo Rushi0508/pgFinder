@@ -1,11 +1,11 @@
+import dotenv from 'dotenv'
+dotenv.config();
 import Property from "../models/property";
 import User from '../models/user'
 import mongoose from "mongoose";
 // import { cloudinary } from "../cloudinary";
 import mbxGeocoding from "@mapbox/mapbox-sdk/services/geocoding";
-// const mapBoxToken = process.env.MAPBOX_TOKEN;
-const geocoder = mbxGeocoding({accessToken: "pk.eyJ1IjoicnVzaGlnYW5kaGkxNDQiLCJhIjoiY2xrMnVmdnpnMGppZjNtcnlvbWZnY2xoeCJ9.EcwhYm_49WQQXp-pk_nW7w"});
-
+const geocoder = mbxGeocoding({accessToken: process.env.MAPBOX_TOKEN});
 export const createProperty = async (req,res)=>{
     try{
         const userId = req.body.userId;
