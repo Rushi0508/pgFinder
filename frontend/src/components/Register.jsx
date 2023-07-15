@@ -12,7 +12,7 @@ import { Link } from "react-router-dom";
 
 export const Register = () => {
     const navigate = useNavigate();
-    const [showModal, setShowModal] = useState(false);
+    const [showModal, setShowModal] = useState(true);
     const [registerState, setRegisterState] = useState(null);
     const [toastId, setToastId] = useState(null);
     const [user, setUser] = useState({
@@ -110,7 +110,7 @@ export const Register = () => {
     return (
         <>
             <BackGround>
-                <CustomModal visible={showModal} onClose={() => setShowModal(false)}>
+                <CustomModal visible={showModal}>
                 <SendOtp userEmail={user.email} userverify={verify} />
                 </CustomModal>
                 <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-2 rounded-lg">
