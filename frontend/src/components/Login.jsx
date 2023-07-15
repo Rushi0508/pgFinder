@@ -1,6 +1,7 @@
 import { useState } from "react";
 import logo from "../assets/pflogo.png"
 import { BackGround } from "./Backgroud"
+
 import { useNavigate } from "react-router-dom";
 import CustomModal from "./CustomModal";
 import { SendOtp } from "./SendOtp";
@@ -8,6 +9,9 @@ import toast, { Toaster } from 'react-hot-toast';
 
 import axios from "axios";
 import { getToastOptions } from "../assets/toastOptions";
+
+import { Link } from "react-router-dom"
+
 
 export const Login = () => {
     const navigate = useNavigate();
@@ -145,9 +149,9 @@ export const Login = () => {
                         </form>
                         <p className="mt-10 text-center text-sm text-gray-500">
                             Not a user?{' '}
-                            <a href="/register" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
+                            <Link to="/register" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
                                 Sign up now
-                            </a>
+                            </Link>
                         </p>
                     </div>
                 </div>
