@@ -63,6 +63,7 @@ export const Login = () => {
                 toast.error(data.errors, getToastOptions);
             }
             else if(data.status=="Pending"){
+
                 setVerify({
                     ...verify,userId:data.data.userId
                 })
