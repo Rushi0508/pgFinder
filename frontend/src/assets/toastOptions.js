@@ -1,6 +1,6 @@
 export const getToastOptions = {
     position: "top-center",
-    duration: 1000,
+    duration: 2000,
     
     // reverseOrder: true
   };
