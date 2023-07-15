@@ -5,6 +5,10 @@ const imageSchema = new mongoose.Schema({
     filename: String
 });
 
+imageSchema.virtual('thumbnail').get(function () {
+    return this.url.replace('/upload', '/upload/w_200');
+});
+
 const propertySchema = new mongoose.Schema({
     title: {
         type: String,
@@ -12,14 +16,14 @@ const propertySchema = new mongoose.Schema({
     },
     images: [imageSchema],
     price: {
-        type: Number,
+        type: String,
         required: [true, "Price is required"]
     },
+    unit: String,
     contactNo: {
         type: String,
         required: [true, "Contact required"]
     },
-    unit: String,
     description: String,
     location: String,
     createdAt: { type: Date, default: Date.now },
