@@ -23,13 +23,11 @@ export const SendOtp = ({userEmail, userverify}) => {
         }
     }
 
-    const handleOTP = async ()=>{
-        const userotp = otp.join(' ');
-        console.log({...userverify, otp:userotp});
-        const {data} = await axios.post(
-            "http://localhost:5000/api/auth/verifyOTP",
-            {...userverify, otp:userotp}
-        )
+    const handleOTP = async (e)=>{
+        e.preventDefault();
+        const userotp = otp.join('');
+        const sendVerifyOtp = {...userverify, otp:userotp};
+        const {data} = await axios.post("http://localhost:5000/api/auth/verifyOTP",sendVerifyOtp);
         if(data.status){
             navigate('/home');
         }
