@@ -1,12 +1,13 @@
 import axios from 'axios';
 import React, { useState } from 'react'
+import toast, { Toaster } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
 export const SendOtp = ({userEmail, userverify}) => {
 
     const [otp, setOtp] = useState([0,0,0,0,0]);
+    const [resendotp, setResendOtp] = useState(null);
     const navigate = useNavigate();
-
 
     const updateOtp = (e)=>{
         
@@ -25,12 +26,31 @@ export const SendOtp = ({userEmail, userverify}) => {
 
     const handleOTP = async (e)=>{
         e.preventDefault();
-        const userotp = otp.join('');
-        const sendVerifyOtp = {...userverify, otp:userotp};
-        const {data} = await axios.post("http://localhost:5000/api/auth/verifyOTP",sendVerifyOtp);
-        if(data.status){
-            navigate('/home');
+
+        if(resendotp==null || resendotp==true){
+            console.log("otp");
+            if(resendotp==null){
+                setResendOtp(true);
+            }else{
+                setResendOtp(false);
+            }
+            const userotp = otp.join('');
+            const sendVerifyOtp = {...userverify, otp:userotp};
+            const {data} = await axios.post("http://localhost:5000/api/auth/verifyOTP",sendVerifyOtp);
+            console.log(data);
+            if(data.status){
+                navigate('/home');
+            }
+            else{
+                toast.error("Your Otp is Wrong try again using login",{ position: "top-center",
+                duration: 5000});
+            }
         }
+    }
+    const handleresendotp = ()=>{
+        // toast.error("sending otp again..",{ position: "top-center",
+        //         duration: 2000});
+        // resendotp
     }
 
     return (
@@ -102,14 +122,11 @@ export const SendOtp = ({userEmail, userverify}) => {
                                 </div>
                                 <div className="flex flex-row items-center justify-center text-center text-sm font-medium space-x-1 text-gray-500">
                                     <p>Didn't recieve code?</p>{" "}
-                                    <a
+                                    <button
                                         className="flex flex-row items-center text-blue-600"
-                                        href="http://"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
                                     >
                                         Resend
-                                    </a>
+                                    </button>
                                 </div>
                             </div>
                         </div>
