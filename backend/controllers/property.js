@@ -6,6 +6,7 @@ import mongoose from "mongoose";
 // import { cloudinary } from "../cloudinary";
 import mbxGeocoding from "@mapbox/mapbox-sdk/services/geocoding";
 const geocoder = mbxGeocoding({accessToken: process.env.MAPBOX_TOKEN});
+
 export const createProperty = async (req,res)=>{
     try{
         const userId = req.body.userId;
@@ -13,12 +14,17 @@ export const createProperty = async (req,res)=>{
         if(!user){
             throw new Error("User not found");
         }
-        const geoData = await geocoder.forwardGeocode({
-            query: req.body.location,
-            limit: 1
-        }).send();
         const property = new Property(req.body);
-        property.geometry = geoData.body.features[0].geometry;
+        if(req.body.coordinates){
+            property.geometry.type = "Point"
+            property.geometry.coordinates = req.body.coordinates;
+        }else{
+            const geoData = await geocoder.forwardGeocode({
+                query: req.body.location,
+                limit: 1
+            }).send();
+            property.geometry = geoData.body.features[0].geometry
+        }
         // property.images = req.files.map(f => ({ url: f.path, filename: f.filename }));
         property.author = req.body.userId;
         user.property.push(property);
