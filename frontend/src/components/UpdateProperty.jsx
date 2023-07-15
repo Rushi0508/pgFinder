@@ -3,7 +3,7 @@ import {BackGround} from './Backgroud'
 import axios from 'axios'
 import { Link } from 'react-router-dom';
 
-export default function CreateProperty() {
+export default function UpdateProperty() {
     const [title,setTitle] = useState("");
     const [price,setPrice] = useState("");
     const [unit,setUnit] = useState("");
@@ -33,7 +33,7 @@ export default function CreateProperty() {
             userId,title,price,unit,location,description,contactNo,coordinates
         }
         const response = await axios.post(
-            'http://localhost:5000/api/property/create',
+            'http://localhost:5000/api/property/update',
             data 
         )
         console.log(response);
@@ -165,3 +165,4 @@ export default function CreateProperty() {
     </>
   )
 }
+
