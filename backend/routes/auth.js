@@ -9,5 +9,4 @@ router.route('/api/auth/verifyOTP')
     .post(verifyOTP)
 router.route('/api/auth/login')
     .post(login)
-    
 export default router

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import logo from "../assets/pflogo.png"
 import { BackGround } from "./Backgroud"
 
@@ -15,8 +15,9 @@ import { Link } from "react-router-dom"
 
 export const Login = () => {
     const navigate = useNavigate();
+    const token = localStorage.getItem('jwt_token');
     const [showModal, setShowModal] = useState(false);
-    // const [registerState, setRegisterState] = useState(null);
+    const [loginState, setLoginState] = useState(null);
     const [toastId, setToastId] = useState(null);
     const [loginUser, setLoginUser] = useState({
         email: '',
@@ -51,35 +52,54 @@ export const Login = () => {
         }
         return true;
     }
-
     const handleLogin = async(e)=>{
         e.preventDefault();
-
         if(handleValidate(loginUser))
         {
+            setLoginState("Pending")
             const {data} = await axios.post("http://localhost:5000/api/auth/login", loginUser);
-            console.log(data);
+            setLoginState("Success")
             if(data.hasOwnProperty("errors")){
                 toast.error(data.errors, getToastOptions);
             }
-            else{
+            else if(data.status=="Pending"){
                 setVerify({
                     ...verify,userId:data.data.userId
                 })
-                toast.success("you are Not verified user kindly please verify", getToastOptions);
+                toast.success("Please proceed with OTP verification", getToastOptions);
                 setTimeout(() => {
                     setShowModal(true);
                 }, 2000);
             }
+            else{
+                console.log(data);
+                localStorage.setItem('jwt_token', data.userAuthToken);
+                localStorage.setItem('user_id', data.data._id);
+                navigate('/home')
+            }
         }
     };
 
-
+    useEffect(()=>{
+        if(token){
+            navigate(-1);
+        }
+        if(loginState!==null){
+            if(loginState=="Pending")
+            {
+                const toastuniqukey = toast.loading('Please Wait');
+                setToastId(toastuniqukey);
+            }
+            else{
+                toast.dismiss(toastId);
+            }
+        }
+    }, [loginState])
 
     return (
         <>
             <BackGround>
-                <CustomModal visible={showModal} onClose={() => setShowModal(false)}>
+                <CustomModal visible={showModal}>
                     <SendOtp userEmail={loginUser.email} userverify={verify}  />
                 </CustomModal>
                 <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 rounded-lg">
