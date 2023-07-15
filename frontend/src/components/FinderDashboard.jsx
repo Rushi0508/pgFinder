@@ -1,9 +1,56 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { BackGround } from './Backgroud'
-import StarIcon from '../assets/icons/star.png'
+import axios from 'axios'
 
 export const FinderDashboard = () => {
+    const token = localStorage.getItem('jwt_token')
+    const userId = localStorage.getItem('user_id')
+    const navigate = useNavigate();
+    const [latitude,setLatitude] = useState(null);
+    const [longitude,setLongitude] = useState(null);
+    const [items, setItems] = useState([]);
+    const fetchNearData = async()=>{
+        const {data} = await axios.post(
+            'http://localhost:5000/api/property/nearest',
+            {latitude, longitude, userId},
+            {
+                headers: {
+                    Authorization: `${token}`,
+                }
+            }
+        )
+        setItems(data.data)
+        if(data.loginRequired){
+            navigate('/login')
+            localStorage.removeItem('jwt_token')
+            localStorage.removeItem('user_id')
+        }
+    }
+
+    useEffect(()=>{
+        if(!token){
+            navigate('/login');
+        }
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(success, error);
+        } else {
+            console.log("Geolocation not supported");
+        }
+        
+        function success(position) {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+            setLatitude(latitude)
+            setLongitude(longitude)
+        }
+        function error() {
+            console.log("Unable to retrieve your location");
+        }
+        if(latitude && longitude){
+            fetchNearData();
+        }
+    }, [latitude,longitude])
     return (
       <BackGround>
           <>
@@ -80,14 +127,6 @@ export const FinderDashboard = () => {
                         </li>
                         <li className='text-left'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Explicabo voluptatum ipsa delectus excepturi labore inventore voluptas nemo ea perspiciatis laudantium!</li>
                         <li className='text-left'>spitvallley, Gujarat</li>
-                        <li className='flex items-center gap-x-4'>
-                            <span className='flex'>
-                                <img src={StarIcon} className='w-10 h-10' alt="" />
-                                <img src={StarIcon} className='w-10 h-10' alt="" />
-                                <img src={StarIcon} className='w-10 h-10' alt="" />
-                            </span>
-                            <span>Review: 4.5</span>
-                        </li>
                         <li className='text-left sm:text-right'>
                             <button className='bg-indigo-600 px-4 py-2 rounded-md hover:bg-indigo-700 text-white text-xl'>
                                 view Pg Details

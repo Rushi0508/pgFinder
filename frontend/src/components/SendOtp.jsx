@@ -41,7 +41,7 @@ export const SendOtp = ({userEmail, userverify}) => {
             if(data.status){
                 localStorage.setItem('jwt_token', data.userAuthToken);
                 localStorage.setItem('user_id', data.data._id);
-                navigate('/home');
+                navigate('/search');
             }
             else{
                 toast.error("Invalid code",{ position: "top-center",

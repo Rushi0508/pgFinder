@@ -1,9 +1,10 @@
 import express from 'express'
 import { getProperty, getUserProperty,createProperty,editProperty,deleteProperty,nearestProperty } from '../controllers/property'
+import { isAuthenticated } from '../middleware';
 
 const router = express.Router();
 router.route('/api/property/nearest')
-    .get(nearestProperty)
+    .post(isAuthenticated,nearestProperty)
 router.route('/api/property/create')
     .post(createProperty)
 router.route('/api/property/edit/:id')

@@ -15,7 +15,7 @@ function App() {
                 <Route  path="/login" element={<Login />} />
                 <Route  path="/register" element={<Register />} />
                 <Route  path="/pg/create" element={<CreateProperty />} />
-                <Route  path="/pg/all" element={<FinderDashboard />} />
+                <Route  path="/search" element={<FinderDashboard />} />
             </Routes>
         </>
     )

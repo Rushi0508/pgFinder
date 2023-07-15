@@ -2,9 +2,9 @@ import jwt from 'jsonwebtoken'
 import User from './models/user';
 import express from 'express'
 
-const isAuthenticated = async(req,res,next)=>{
+export const isAuthenticated = (req,res,next)=>{
     try{
-        const token = req.headers['Authorization']
+        const token = req.headers.authorization
         if(token){
             jwt.verify(token, process.env.JWT_SECRET, async(err,decodedToken)=>{
                 if(err){
