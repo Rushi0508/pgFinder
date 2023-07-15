@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { BackGround } from './Backgroud'
 import axios from 'axios'
+import { Propertycard } from './Propertycard'
 
 export const FinderDashboard = () => {
     const token = localStorage.getItem('jwt_token')
@@ -20,7 +21,7 @@ export const FinderDashboard = () => {
                 }
             }
         )
-        setItems(data.data)
+        setItems(data.data);
         if(data.loginRequired){
             navigate('/login')
             localStorage.removeItem('jwt_token')
@@ -116,25 +117,12 @@ export const FinderDashboard = () => {
 
             </div>
             <div className='px-4 mt-4'>
-                <div className='w-full bg-slate-100 p-4 gap-x-4 rounded-md flex flex-col space-y-4 sm:flex-row'>
-                    <div className='sm:w-full lg:w-2/5 flex items-center justify-center'>
-                        <img className='rounded-md h-48 object-cover' src="https://c.ndtvimg.com/2023-07/nqtgiefo_virat-kohli-afp_625x300_14_July_23.jpg?im=FeatureCrop,algorithm=dnn,width=806,height=605" alt="" />
-                    </div>
-                    <ul className='px-4 space-y-3 sm:space-y-2'>
-                        <li className='flex justify-between'>
-                            <span className='text-lg sm:text-xl font-semibold'>virat kohli</span>
-                            <span className='text-sm'>50$/Room</span>
-                        </li>
-                        <li className='text-left'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Explicabo voluptatum ipsa delectus excepturi labore inventore voluptas nemo ea perspiciatis laudantium!</li>
-                        <li className='text-left'>spitvallley, Gujarat</li>
-                        <li className='text-left sm:text-right'>
-                            <button className='bg-indigo-600 px-4 py-2 rounded-md hover:bg-indigo-700 text-white text-xl'>
-                                view Pg Details
-                            </button>
-                        </li>
-                    </ul>
-
-                </div>
+            {
+                items.map((item, id)=>{
+                    // console.log(item);
+                    return(<Propertycard item={item} key={id} PropertyCardType={"Readable"}/>);
+                })
+            }
             </div>
         </>
       </BackGround>

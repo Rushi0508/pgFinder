@@ -85,7 +85,7 @@ export const nearestProperty = async (req,res)=>{
                 $geoNear:{
                     near: {type: "Point", coordinates: [parseFloat(longitude), parseFloat(latitude)]},
                     key: "geometry",
-                    maxDistance: parseFloat(2)*1000,
+                    maxDistance: parseFloat(4)*1000,
                     distanceField: "dist.calculated",
                     spherical: true   
                 }

@@ -82,7 +82,7 @@ export const Login = () => {
 
     useEffect(()=>{
         if(token){
-            navigate(-1);
+            navigate("/search");
         }
         if(loginState!==null){
             if(loginState=="Pending")

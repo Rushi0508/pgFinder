@@ -4,7 +4,7 @@ import { isAuthenticated } from '../middleware';
 
 const router = express.Router();
 router.route('/api/property/nearest')
-    .post(isAuthenticated,nearestProperty)
+    .post(nearestProperty)
 router.route('/api/property/create')
     .post(createProperty)
 router.route('/api/property/edit/:id')

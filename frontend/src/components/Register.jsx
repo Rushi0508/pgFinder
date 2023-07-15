@@ -73,7 +73,7 @@ export const Register = () => {
 
     useEffect(() => {
         if (token) {
-            navigate(-1);
+            navigate("/login");
         }
         if (registerState !== null) {
             if (registerState == "Pending") {

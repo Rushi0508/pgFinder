@@ -1,51 +1,33 @@
-import React, { useEffect, useState } from 'react'
-import {BackGround} from './Backgroud'
-import axios from 'axios'
+import React, { useEffect, useState } from 'react';
+import {BackGround} from './Backgroud';
+import axios from 'axios';
 import { getToastOptions } from "../assets/toastOptions";
 import toast, { Toaster } from 'react-hot-toast';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
-export default function CreateProperty() {
-    // const [title,setTitle] = useState("");
-    // const [price,setPrice] = useState("");
-    // const [unit,setUnit] = useState("");
-    // const [contactNo,setContactNo] = useState("");
-    // const [description,setDescription] = useState("");
-    // const [location,setLocation] = useState("");
+export default function UpdateProperty() {
 
     const token = localStorage.getItem('jwt_token')
     const userId = localStorage.getItem('user_id')
     const navigate = useNavigate();
-    const [pgDetail, setPgDetail] = useState({
-        title:"", price:"", unit:"", contactNo:"", description:"", location:""
-    })
 
-    // const handleLocation = ()=>{
-    //     if (navigator.geolocation) {
-    //         navigator.geolocation.getCurrentPosition(success, error);
-    //     } else {
-    //     console.log("Geolocation not supported");
-    //     }
-        
-    //     function success(position) {
-    //         const latitude = position.coords.latitude;
-    //         const longitude = position.coords.longitude;
-    //         setCoordinates([longitude,latitude])
-    //     }
-    //     function error() {
-    //         console.log("Unable to retrieve your location");
-    //     }
-    // }
+    const Location = useLocation();
+    const getItem = Location.state.item;
+    const {title, price, contactNo, unit,location, description ,images } = getItem;
+    const ItemId = getItem._id;
+    const UpdatePgObject = {title, price, contactNo, description ,location,unit, images};
 
-    const handleSubmit = async (e)=>{
+    const [UpdatePg, setUpdatePg] = useState(UpdatePgObject);
+
+    const handleUpdate = async (e)=>{
         e.preventDefault();
-        const bodyObject = {...pgDetail, userId:userId};
-        const {data} = await axios.post(
-            'http://localhost:5000/api/property/create',
+        const bodyObject = {...UpdatePg, userId:userId};
+        const {data} = await axios.put(
+            `http://localhost:5000/api/property/edit/${ItemId}`,
             bodyObject 
         )
         if(data.status){
-            toast.success("Your New Pg successfully added", getToastOptions);
+            toast.success("Your New Pg successfully updated", getToastOptions);
             setTimeout(() => {
                 navigate("/pg");
             }, 2000);
@@ -53,6 +35,7 @@ export default function CreateProperty() {
         else{
             toast.error("Please try again", getToastOptions);
         }
+        console.log(response);
     }
     useEffect(()=>{
         if(!token){
@@ -82,7 +65,7 @@ export default function CreateProperty() {
                  
                 </div>
             </nav>
-                <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-2 rounded-lg">
+            <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-2 rounded-lg">
                     <div className="sm:mx-auto sm:w-full sm:max-w-sm">
                         <h2 className=" text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
                             Create Property
@@ -102,8 +85,8 @@ export default function CreateProperty() {
                                         id="title"
                                         name="title"
                                         type="text"
-                                        value={pgDetail.title}
-                                        onChange={(e)=>setPgDetail({...pgDetail,[e.target.name]:e.target.value})}
+                                        value={UpdatePg.title}
+                                        onChange={(e)=>setUpdatePg({...UpdatePg,[e.target.name]:e.target.value})}
                                         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 input-field"
                                     />
                                 </div>
@@ -119,8 +102,8 @@ export default function CreateProperty() {
                                         id="price"
                                         name="price"
                                         type="text"
-                                        value={pgDetail.price}
-                                        onChange={(e)=>setPgDetail({...pgDetail,[e.target.name]:e.target.value})}
+                                        value={UpdatePg.price}
+                                        onChange={(e)=>setUpdatePg({...UpdatePg,[e.target.name]:e.target.value})}
                                         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 input-field"
                                     />
                                 </div>
@@ -136,8 +119,8 @@ export default function CreateProperty() {
                                         id="unit"
                                         name="unit"
                                         type="text"
-                                        value={pgDetail.unit}
-                                        onChange={(e)=>setPgDetail({...pgDetail,[e.target.name]:e.target.value})}
+                                        value={UpdatePg.unit}
+                                        onChange={(e)=>setUpdatePg({...UpdatePg,[e.target.name]:e.target.value})}
                                         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 input-field"
                                     />
                                 </div>
@@ -153,8 +136,8 @@ export default function CreateProperty() {
                                         id="contactNo"
                                         name="contactNo"
                                         type="text"
-                                        value={pgDetail.contactNo}
-                                        onChange={(e)=>setPgDetail({...pgDetail,[e.target.name]:e.target.value})}
+                                        value={UpdatePg.contactNo}
+                                        onChange={(e)=>setUpdatePg({...UpdatePg,[e.target.name]:e.target.value})}
                                         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 input-field"
                                     />
                                 </div>
@@ -170,8 +153,8 @@ export default function CreateProperty() {
                                         id="location"
                                         name="location"
                                         type="text"
-                                        value={pgDetail.location}
-                                        onChange={(e)=>setPgDetail({...pgDetail,[e.target.name]:e.target.value})}
+                                        value={UpdatePg.location}
+                                        onChange={(e)=>setUpdatePg({...UpdatePg,[e.target.name]:e.target.value})}
                                         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 input-field"
                                     />
                                 </div>
@@ -187,8 +170,8 @@ export default function CreateProperty() {
                                         id="description"
                                         name="description"
                                         type="text"
-                                        value={pgDetail.description}
-                                        onChange={(e)=>setPgDetail({...pgDetail,[e.target.name]:e.target.value})}
+                                        value={UpdatePg.description}
+                                        onChange={(e)=>setUpdatePg({...UpdatePg,[e.target.name]:e.target.value})}
                                         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 input-field"
                                     />
                                 </div>
@@ -196,10 +179,10 @@ export default function CreateProperty() {
                             <div>
                                 <button
                                     type="submit"
-                                    onClick={handleSubmit}
+                                    onClick={handleUpdate}
                                     className="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                                 >
-                                    Create
+                                    Update
                                 </button>
                             </div>
                         </div>
