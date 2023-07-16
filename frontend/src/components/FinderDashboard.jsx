@@ -11,6 +11,7 @@ export const FinderDashboard = () => {
     const [latitude,setLatitude] = useState(null);
     const [longitude,setLongitude] = useState(null);
     const [items, setItems] = useState([]);
+    const [search, setSearch] = useState("");
     const fetchNearData = async()=>{
         const {data} = await axios.post(
             'http://localhost:5000/api/property/nearest',
@@ -28,7 +29,26 @@ export const FinderDashboard = () => {
         }
         setItems(data.data);
     }
-
+    const handleSearch = async (e)=>{
+        e.preventDefault();
+        if(search!=""){
+            const {data} = await axios.post(
+                'http://localhost:5000/api/property/nearest',
+                {search},
+                {
+                    headers: {
+                        Authorization: `${token}`,
+                    }
+                }
+            )
+            if(data.loginRequired){
+                navigate('/login')
+                localStorage.removeItem('jwt_token')
+                localStorage.removeItem('user_id')
+            }
+            setItems(data.data);
+        }
+    }
     useEffect(()=>{
         if(!token){
             navigate('/login');
@@ -66,7 +86,7 @@ export const FinderDashboard = () => {
                 </div>
                 <div>
                     <Link
-                        to="/one"
+                        to="/pg/my"
                         className="font-medium text-lg no-underline text-grey-darkest hover:text-blue-dark ml-2"
                     >
                         Your PGs
@@ -99,19 +119,21 @@ export const FinderDashboard = () => {
                             className="block p-4 pl-10 w-full text-sm text-gray-900 bg-gray-50  border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 bg-opacity-30 rounded-3xl "
                             placeholder="Search"
                             required=""
+                            value={search}
+                            onChange={(e)=>{setSearch(e.target.value)}}
                         />
                         <button
-                            type="submit"
+                            onClick={handleSearch}
                             className="text-white absolute right-2.5 bottom-2.5 bg-indigo-500 hover:bg-indigo-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 rounded-3xl"
                         >
                             Search
                         </button>
                     </div>
                 </form>
-
             </div>
             <div className='px-4 mt-4'>
             {
+                (items.length===0)? <h1>No PGs found</h1> : 
                 items.map((item, id)=>{
                     // console.log(item);
                     return(<Propertycard item={item} key={id} PropertyCardType={"Readable"}/>);
