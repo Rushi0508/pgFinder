@@ -2,7 +2,8 @@
 export default {
   content: [
       "./index.html",
-      "./src/**/*.{vue,js,ts,jsx,tsx}"
+      "./src/**/*.{vue,js,ts,jsx,tsx}",
+      "./node_modules/flowbite/**/*.js"
   ],
   theme: {
     extend: {},
@@ -10,6 +11,7 @@ export default {
   plugins: [
       require('@tailwindcss/forms'),
       require('@themesberg/flowbite/plugin',),
+      require('flowbite/plugin',),
   ],
 }
 
