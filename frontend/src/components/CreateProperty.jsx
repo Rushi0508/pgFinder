@@ -4,42 +4,47 @@ import axios from 'axios'
 import { getToastOptions } from "../assets/toastOptions";
 import toast, { Toaster } from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router-dom';
+import { CloudinaryContext, Image } from 'cloudinary-react';
 
 
 export default function CreateProperty() {
-    // const [title,setTitle] = useState("");
-    // const [price,setPrice] = useState("");
-    // const [unit,setUnit] = useState("");
-    // const [contactNo,setContactNo] = useState("");
-    // const [description,setDescription] = useState("");
-    // const [location,setLocation] = useState("");
+ 
     const token = localStorage.getItem('jwt_token')
     const userId = localStorage.getItem('user_id')
     const navigate = useNavigate();
     const [pgDetail, setPgDetail] = useState({
         title:"", price:"", unit:"", contactNo:"", description:"", location:""
     })
+    const [pgImages, setPgImages] = useState([]);
 
-    // const handleLocation = ()=>{
-    //     if (navigator.geolocation) {
-    //         navigator.geolocation.getCurrentPosition(success, error);
-    //     } else {
-    //     console.log("Geolocation not supported");
-    //     }
-        
-    //     function success(position) {
-    //         const latitude = position.coords.latitude;
-    //         const longitude = position.coords.longitude;
-    //         setCoordinates([longitude,latitude])
-    //     }
-    //     function error() {
-    //         console.log("Unable to retrieve your location");
-    //     }
-    // }
+    const uploadImage = async (file) => {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', 'e1ocsquo');
+        formData.append("cloud_name", "dbev6vdma");
+      
+        const response = await fetch(
+          `https://api.cloudinary.com/v1_1/dbev6vdma/image/upload`,
+          {
+            method: 'POST',
+            body: formData,
+          }
+        );
+      
+        const data = await response.json();
+        setPgImages([...pgImages,data.secure_url]);
+      };
+      
+    const  handleImageUpload = async (event)=>{
+        // event.preventDefault();
+        const file = event.target.files[0];
+        const imageUrl = await uploadImage(file);
+        console.log('Image URL:', imageUrl);
+    }
 
     const handleSubmit = async (e)=>{
         e.preventDefault();
-        const bodyObject = {...pgDetail, userId:userId};
+        const bodyObject = {...pgDetail, userId:userId, images:pgImages};
         const {data} = await axios.post(
             'http://localhost:5000/api/property/create',
             bodyObject,
@@ -207,6 +212,26 @@ export default function CreateProperty() {
                                         onChange={(e)=>setPgDetail({...pgDetail,[e.target.name]:e.target.value})}
                                         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 input-field"
                                     />
+                                </div>
+                            </div>
+
+                            <div className='space-y-3'>
+                                <div className='block'> 
+                                    <h1 className='text-left text-lg font-medium leading-6 text-gray-900'> Total Updloaded Pic : {pgImages.length}</h1>
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+
+                                    {
+                                        pgImages ? pgImages.map((imageurl, index)=>{
+                                            return (
+                                                <img className='w-28 h-28 object-cover' key={index} src={imageurl} alt="" />
+                                            )
+                                        }):<h1>No images Selected</h1>
+
+                                    }                         
+                                </div>
+                                <div className=''>
+                                <input className='' type="file" onChange={handleImageUpload} />    
                                 </div>
                             </div>
                             <div>

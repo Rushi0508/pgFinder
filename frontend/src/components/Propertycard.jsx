@@ -56,7 +56,7 @@ export const Propertycard = ({ item, PropertyCardType }) => {
         <>
         <div className='bg-gray-100 py-2 gap-x-4 rounded-md flex flex-col space-y-4 sm:flex-row sm:justify-start bg-opacity-30'>
             <div className='sm:w-2/5 lg:w-1/3 flex items-center justify-center p-3'>
-                <img className='rounded-md h-48 object-cover' src="https://c.ndtvimg.com/2023-07/nqtgiefo_virat-kohli-afp_625x300_14_July_23.jpg?im=FeatureCrop,algorithm=dnn,width=806,height=605" alt="" />
+                <img className='rounded-md h-48 object-cover' src={images[0]} alt="" />
             </div>
             <ul className=' sm:space-y-2'>
                 <li className='flex justify-between'>
