@@ -13,7 +13,6 @@ export default function CreateProperty() {
     // const [contactNo,setContactNo] = useState("");
     // const [description,setDescription] = useState("");
     // const [location,setLocation] = useState("");
-
     const token = localStorage.getItem('jwt_token')
     const userId = localStorage.getItem('user_id')
     const navigate = useNavigate();
@@ -43,12 +42,23 @@ export default function CreateProperty() {
         const bodyObject = {...pgDetail, userId:userId};
         const {data} = await axios.post(
             'http://localhost:5000/api/property/create',
-            bodyObject 
+            bodyObject,
+            {
+                headers: {
+                    Authorization: `${token}`,
+                }
+            }
         )
-        if(data.status){
+        console.log(data);
+        if(data.loginRequired){
+            navigate('/login')
+            localStorage.removeItem('jwt_token')
+            localStorage.removeItem('user_id')
+        }
+        else if(data.status){
             toast.success("Your New Pg successfully added", getToastOptions);
             setTimeout(() => {
-                navigate("/pg");
+                navigate("/pg/my");
             }, 2000);
         }
         else{

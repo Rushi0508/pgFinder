@@ -11,8 +11,20 @@ export  default function UserPgDashboard (){
     const [items, setItems] = useState([]);
 
     const fetchAllPg = async ()=>{
-        const {data} = await axios.get(`http://localhost:5000/api/property/user/${userId}`);
-        if(data.status){
+        const {data} = await axios.get(
+            `http://localhost:5000/api/property/user/${userId}`,
+            {
+                headers: {
+                    Authorization: `${token}`,
+                }
+            }
+        );
+        if(data.loginRequired){
+            navigate('/login')
+            localStorage.removeItem('jwt_token')
+            localStorage.removeItem('user_id')
+        }
+        else if(data.status){
             setItems(data.data);
         }
     }

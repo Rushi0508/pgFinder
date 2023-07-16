@@ -8,6 +8,7 @@ export const Propertycard = ({ item, PropertyCardType }) => {
     // console.log(item.title);
     const { title, price, contactNo, unit, location, images, description, _id:itemId } = item;
     const userId = localStorage.getItem('user_id')
+    const token = localStorage.getItem('jwt_token')
     const navigate = useNavigate();
 
     const handleEditProperty = ()=>{
@@ -19,11 +20,23 @@ export const Propertycard = ({ item, PropertyCardType }) => {
     };
     const handleRemoveProperty = async (e)=>{
         e.preventDefault();
-        const {data} = axios.delete(`http://localhost:5000/api/property/delete/${itemId}`);
-        if(data.status){
+        const {data} = axios.delete(
+            `http://localhost:5000/api/property/delete/${itemId}`,
+            {
+                headers: {
+                    Authorization: `${token}`,
+                }
+            }
+        );
+        if(data.loginRequired){
+            navigate('/login')
+            localStorage.removeItem('jwt_token')
+            localStorage.removeItem('user_id')
+        }
+        else if(data.status){
             toast.success("Your  Pg successfully removed", getToastOptions);
             setTimeout(() => {
-                navigate("/pg");
+                navigate("/pg/my");
             }, 2000);
         }
         else{

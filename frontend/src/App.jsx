@@ -19,7 +19,7 @@ function App() {
                 <Route  path="/pg/create" element={<CreateProperty />} />
                 <Route  path="/search" element={<FinderDashboard />} />
                 <Route  path="/pg/update" element={<UpdateProperty />} />
-                <Route  path="/pg" element={<UserPgDashboard />} />
+                <Route  path="/pg/my" element={<UserPgDashboard />} />
             </Routes>
         </>
     )
