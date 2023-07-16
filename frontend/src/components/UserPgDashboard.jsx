@@ -38,10 +38,10 @@ export default function UserPgDashboard() {
                     </div>
                     <div>
                         <Link
-                            to="/pg"
+                            to="/pg/create"
                             className="font-medium text-lg no-underline text-grey-darkest hover:text-blue-dark ml-2"
                         >
-                            Your PGs
+                            ADD PGs
                         </Link>
 
                     </div>
