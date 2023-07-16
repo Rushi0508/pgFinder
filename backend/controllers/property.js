@@ -78,23 +78,34 @@ export const deleteProperty = async(req,res )=>{
 
 export const nearestProperty = async (req,res)=>{
     try{
-        const {userId, latitude, longitude} = req.body;
-        const property = await Property.aggregate([
-            {
-                $geoNear:{
-                    near: {type: "Point", coordinates: [parseFloat(longitude), parseFloat(latitude)]},
-                    key: "geometry",
-                    maxDistance: parseFloat(4)*1000,
-                    distanceField: "dist.calculated",
-                    spherical: true   
-                }
-            },
-            {
-                $match: {
-                    author: { $ne: new mongoose.Types.ObjectId(userId) }
-                }
-            }
-        ])
+        let property;
+        if(req.body.search){
+            console.log(req.body.search);
+            const search = req.body.search;
+            const regex = new RegExp(search, 'i');
+            property = await Property.find({ location: { $regex: regex } });
+
+        }
+        else{
+            const {userId, latitude, longitude} = req.body;
+            console.log(req.body);
+            property = await Property.aggregate([
+                {
+                    $geoNear:{
+                        near: {type: "Point", coordinates: [parseFloat(longitude), parseFloat(latitude)]},
+                        key: "geometry",
+                        maxDistance: parseFloat(400)*1000,
+                        distanceField: "dist.calculated",
+                        spherical: true   
+                    }
+                },
+                // {
+                //     $match: {
+                //         author: { $ne: new mongoose.Types.ObjectId(userId) }
+                //     }
+                // }
+            ])
+        }
         console.log(property);
         res.json({status: true, data: property})
     }catch(err){
