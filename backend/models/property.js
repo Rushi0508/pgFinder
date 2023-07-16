@@ -1,20 +1,19 @@
 import mongoose from 'mongoose'
 
-const imageSchema = new mongoose.Schema({
-    url: String,
-    filename: String
-});
+// const imageSchema = new mongoose.Schema({
+    
+// });
 
-imageSchema.virtual('thumbnail').get(function () {
-    return this.url.replace('/upload', '/upload/w_200');
-});
+// imageSchema.virtual('thumbnail').get(function () {
+//     return this.url.replace('/upload', '/upload/w_200');
+// });
 
 const propertySchema = new mongoose.Schema({
     title: {
         type: String,
         required: [true, "Title is required"]
     },
-    images: [imageSchema],
+    images: {type: [String]},
     price: {
         type: String,
         required: [true, "Price is required"]

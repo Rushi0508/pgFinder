@@ -35,15 +35,17 @@ const Property = () => {
             </div>
 
             <div className="w-full">
-                <Carousel />
+                {/* <Carousel images={images} />
+                 */}
+                 <img src={images[0]} className="w-full h-48" alt="" />
             </div>
             <div className="flex flex-col justify-between items-center md:flex-row gap-10 w-full md:w-[90%]">
                 <div className="flex flex-col gap-5 text-left w-full ">
                     <h3 className="text-4xl text-indigo-600 font-medium ">{title}</h3>
-                    <div className="flex flex-col gap ">
+                    {/* <div className="flex flex-col gap ">
                         <p className="text-xl text-gray-700  font-semibold">Created By </p>
                         <p className="text-xl text-gray-500 font-normal">Dhruv Dabhi</p>
-                    </div>
+                    </div> */}
                     <div className="flex flex-col gap ">
                         <p className="text-xl text-gray-700  font-semibold">Description</p>
                         <p className="text-xl text-gray-500 font-normal">{description} </p>
