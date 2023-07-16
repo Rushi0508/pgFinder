@@ -7,6 +7,7 @@ import { Register } from './components/Register';
 import { Routes, Route } from 'react-router-dom';
 import UpdateProperty from './components/UpdateProperty';
 import UserPgDashboard from './components/UserPgDashboard';
+import Property from './components/Property';
 
 function App() {
 
@@ -20,6 +21,7 @@ function App() {
                 <Route  path="/search" element={<FinderDashboard />} />
                 <Route  path="/pg/update" element={<UpdateProperty />} />
                 <Route  path="/pg/my" element={<UserPgDashboard />} />
+                <Route  path="/pg/:id" element={<Property />} />
             </Routes>
         </>
     )

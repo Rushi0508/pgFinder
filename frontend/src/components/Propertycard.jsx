@@ -43,6 +43,15 @@ export const Propertycard = ({ item, PropertyCardType }) => {
             toast.error("Please try again", getToastOptions);
         }
     };
+
+    const handlePropertyDetail = ()=>{
+        navigate(`/pg/${itemId}`,{
+            state:{
+                item
+            }
+        })
+    }
+
     return (
         <>
         <div className='bg-gray-100 py-2 gap-x-4 rounded-md flex flex-col space-y-4 sm:flex-row sm:justify-start bg-opacity-30'>
@@ -57,16 +66,16 @@ export const Propertycard = ({ item, PropertyCardType }) => {
                 <li className='text-left  text-lg'>{description}</li>
                 <li className='text-left  text-lg'>{location}</li>
 
-                {/* {
-                    PropertyCardType === "Readable" ? <li className='text-left sm:text-right'>
-                        <button className='bg-indigo-600 px-4 py-2 rounded-md hover:bg-indigo-700 text-white text-xl'>
+                 {
+                    PropertyCardType === "Readable" ?
+                    <li className='text-left sm:text-right'>
+                        <button 
+                        onClick={handlePropertyDetail}
+                        className='bg-indigo-600 px-4 py-2 rounded-md hover:bg-indigo-700 text-white text-xl'>
                             view Pg Details
                         </button>
-                    </li> : <></>
-
-                } */}
-
-                <li className='flex justify-end gap-x-5 px-4'>
+                    </li> :               
+                    <li className='flex justify-end gap-x-5 px-4'>
                         <button 
                         onClick={handleEditProperty}
                         className='bg-indigo-500 p-3 font-medium rounded-md hover:bg-indigo-600 text-white '>
@@ -77,7 +86,8 @@ export const Propertycard = ({ item, PropertyCardType }) => {
                         className='bg-red-500 p-3 rounded-md hover:bg-red-600 text-white  font-medium'>
                             Remove Property
                         </button>
-                </li>
+                    </li>
+                    } 
             </ul>
 
         </div>

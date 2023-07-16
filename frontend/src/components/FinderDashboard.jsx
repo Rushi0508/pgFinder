@@ -66,7 +66,7 @@ export const FinderDashboard = () => {
                 </div>
                 <div>
                     <Link
-                        to="/pg"
+                        to="/pg/my"
                         className="font-medium text-lg no-underline text-grey-darkest hover:text-blue-dark ml-2"
                     >
                         Your PGs

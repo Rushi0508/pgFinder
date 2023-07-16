@@ -39,7 +39,7 @@ export default function UpdateProperty() {
         else if(data.status){
             toast.success("Your New Pg successfully updated", getToastOptions);
             setTimeout(() => {
-                navigate("/pg");
+                navigate("/pg/my");
             }, 2000);
         }
         else{
