@@ -5,6 +5,8 @@ import LandingPage from './components/LandingPage';
 import { Login } from './components/Login';
 import { Register } from './components/Register';
 import { Routes, Route } from 'react-router-dom';
+import UpdateProperty from './components/UpdateProperty';
+import UserPgDashboard from './components/UserPgDashboard';
 
 function App() {
 
@@ -15,7 +17,9 @@ function App() {
                 <Route  path="/login" element={<Login />} />
                 <Route  path="/register" element={<Register />} />
                 <Route  path="/pg/create" element={<CreateProperty />} />
-                <Route  path="/pg/all" element={<FinderDashboard />} />
+                <Route  path="/search" element={<FinderDashboard />} />
+                <Route  path="/pg/update" element={<UpdateProperty />} />
+                <Route  path="/pg" element={<UserPgDashboard />} />
             </Routes>
         </>
     )

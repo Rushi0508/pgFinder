@@ -1,8 +1,57 @@
-import { Link } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { BackGround } from './Backgroud'
-import StarIcon from '../assets/icons/star.png'
+import axios from 'axios'
+import { Propertycard } from './Propertycard'
 
 export const FinderDashboard = () => {
+    const token = localStorage.getItem('jwt_token')
+    const userId = localStorage.getItem('user_id')
+    const navigate = useNavigate();
+    const [latitude,setLatitude] = useState(null);
+    const [longitude,setLongitude] = useState(null);
+    const [items, setItems] = useState([]);
+    const fetchNearData = async()=>{
+        const {data} = await axios.post(
+            'http://localhost:5000/api/property/nearest',
+            {latitude, longitude, userId},
+            {
+                headers: {
+                    Authorization: `${token}`,
+                }
+            }
+        )
+        setItems(data.data);
+        if(data.loginRequired){
+            navigate('/login')
+            localStorage.removeItem('jwt_token')
+            localStorage.removeItem('user_id')
+        }
+    }
+
+    useEffect(()=>{
+        if(!token){
+            navigate('/login');
+        }
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(success, error);
+        } else {
+            console.log("Geolocation not supported");
+        }
+        
+        function success(position) {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+            setLatitude(latitude)
+            setLongitude(longitude)
+        }
+        function error() {
+            console.log("Unable to retrieve your location");
+        }
+        if(latitude && longitude){
+            fetchNearData();
+        }
+    }, [latitude,longitude])
     return (
       <BackGround>
           <>
@@ -62,33 +111,12 @@ export const FinderDashboard = () => {
 
             </div>
             <div className='px-4 mt-4'>
-                <div className='w-full bg-gray-100 p-4 gap-x-4 rounded-md flex flex-col space-y-4 sm:flex-row backdrop-filter-blur bg-opacity-30 '>
-                    <div className='sm:w-full lg:w-2/5 flex items-center justify-center'>
-                        <img className='rounded-md h-48 object-cover' src="https://c.ndtvimg.com/2023-07/nqtgiefo_virat-kohli-afp_625x300_14_July_23.jpg?im=FeatureCrop,algorithm=dnn,width=806,height=605" alt="" />
-                    </div>
-                    <ul className='px-4 space-y-3 sm:space-y-2'>
-                        <li className='flex justify-between'>
-                            <span className='text-lg sm:text-xl font-semibold'>Virat Kohli</span>
-                            <span className='text-lg font-medium'>50$/Room</span>
-                        </li>
-                        <li className='text-left'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Explicabo voluptatum ipsa delectus excepturi labore inventore voluptas nemo ea perspiciatis laudantium!</li>
-                        <li className='text-left font-medium'>spitvallley, Gujarat</li>
-                        <li className='flex items-center gap-x-4'>
-                            <span className='flex'>
-                                <img src={StarIcon} className='w-10 h-10' alt="" />
-                                <img src={StarIcon} className='w-10 h-10' alt="" />
-                                <img src={StarIcon} className='w-10 h-10' alt="" />
-                            </span>
-                            <span>Review: 4.5</span>
-                        </li>
-                        <li className='text-left sm:text-right'>
-                            <button className='bg-indigo-500 p-2 rounded-md hover:bg-indigo-500 text-white text-xl font-medium'>
-                                View PG Details
-                            </button>
-                        </li>
-                    </ul>
-
-                </div>
+            {
+                items.map((item, id)=>{
+                    // console.log(item);
+                    return(<Propertycard item={item} key={id} PropertyCardType={"Readable"}/>);
+                })
+            }
             </div>
         </>
       </BackGround>

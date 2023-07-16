@@ -1,43 +1,65 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {BackGround} from './Backgroud'
 import axios from 'axios'
-import { Link } from 'react-router-dom';
+import { getToastOptions } from "../assets/toastOptions";
+import toast, { Toaster } from 'react-hot-toast';
+import { Link, useNavigate } from 'react-router-dom';
+
 
 export default function CreateProperty() {
-    const [title,setTitle] = useState("");
-    const [price,setPrice] = useState("");
-    const [unit,setUnit] = useState("");
-    const [contactNo,setContactNo] = useState("");
-    const [description,setDescription] = useState("");
-    const [location,setLocation] = useState("");
-    const [coordinates, setCoordinates] = useState([])
-    const handleLocation = ()=>{
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(success, error);
-        } else {
-        console.log("Geolocation not supported");
-        }
+    // const [title,setTitle] = useState("");
+    // const [price,setPrice] = useState("");
+    // const [unit,setUnit] = useState("");
+    // const [contactNo,setContactNo] = useState("");
+    // const [description,setDescription] = useState("");
+    // const [location,setLocation] = useState("");
+
+    const token = localStorage.getItem('jwt_token')
+    const userId = localStorage.getItem('user_id')
+    const navigate = useNavigate();
+    const [pgDetail, setPgDetail] = useState({
+        title:"", price:"", unit:"", contactNo:"", description:"", location:""
+    })
+
+    // const handleLocation = ()=>{
+    //     if (navigator.geolocation) {
+    //         navigator.geolocation.getCurrentPosition(success, error);
+    //     } else {
+    //     console.log("Geolocation not supported");
+    //     }
         
-        function success(position) {
-            const latitude = position.coords.latitude;
-            const longitude = position.coords.longitude;
-            setCoordinates([longitude,latitude])
-        }
-        function error() {
-            console.log("Unable to retrieve your location");
-        }
-    }
-    const handleSubmit = async ()=>{
-        const userId = "64b21bba20f3ad08f4e1641a";
-        const data = {
-            userId,title,price,unit,location,description,contactNo,coordinates
-        }
-        const response = await axios.post(
+    //     function success(position) {
+    //         const latitude = position.coords.latitude;
+    //         const longitude = position.coords.longitude;
+    //         setCoordinates([longitude,latitude])
+    //     }
+    //     function error() {
+    //         console.log("Unable to retrieve your location");
+    //     }
+    // }
+
+    const handleSubmit = async (e)=>{
+        e.preventDefault();
+        const bodyObject = {...pgDetail, userId:userId};
+        const {data} = await axios.post(
             'http://localhost:5000/api/property/create',
-            data 
+            bodyObject 
         )
-        console.log(response);
+        if(data.status){
+            toast.success("Your New Pg successfully added", getToastOptions);
+            setTimeout(() => {
+                navigate("/pg");
+            }, 2000);
+        }
+        else{
+            toast.error("Please try again", getToastOptions);
+        }
     }
+    useEffect(()=>{
+        if(!token){
+            navigate('/login');
+        }
+    })
   return (
     <>
     <BackGround>
@@ -53,7 +75,8 @@ export default function CreateProperty() {
                 </div>
                 <div>
                     <Link
-                        to="/one"
+                        to="/pg"
+
                         className="font-medium text-lg no-underline text-grey-darkest hover:text-blue-dark ml-2"
                     >
                         Your PGs
@@ -79,9 +102,10 @@ export default function CreateProperty() {
                                 <div className="mt-2">
                                     <input
                                         id="title"
-                                        name="name"
+                                        name="title"
                                         type="text"
-                                        required
+                                        value={pgDetail.title}
+                                        onChange={(e)=>setPgDetail({...pgDetail,[e.target.name]:e.target.value})}
                                         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 input-field"
                                     />
                                 </div>
@@ -94,10 +118,11 @@ export default function CreateProperty() {
                                 </div>
                                 <div className="mt-2">
                                     <input
-                                        id="phone"
-                                        name="phone"
+                                        id="price"
+                                        name="price"
                                         type="text"
-                                        required
+                                        value={pgDetail.price}
+                                        onChange={(e)=>setPgDetail({...pgDetail,[e.target.name]:e.target.value})}
                                         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 input-field"
                                     />
                                 </div>
@@ -113,14 +138,34 @@ export default function CreateProperty() {
                                         id="unit"
                                         name="unit"
                                         type="text"
-                                        required
+
+                                        value={pgDetail.unit}
+                                        onChange={(e)=>setPgDetail({...pgDetail,[e.target.name]:e.target.value})}
+                                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 input-field"
+                                    />
+                                </div>
+                            </div>
+                            <div>
+                                <div className="flex ">
+                                    <label htmlFor="contactNo" className="block text-sm font-medium leading-6 text-gray-900">
+                                    contactNo
+                                    </label>
+                                </div>
+                                <div className="mt-2">
+                                    <input
+                                        id="contactNo"
+                                        name="contactNo"
+                                        type="text"
+                                        value={pgDetail.contactNo}
+                                        onChange={(e)=>setPgDetail({...pgDetail,[e.target.name]:e.target.value})}
                                         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 input-field"
                                     />
                                 </div>
                             </div>
                             <div>
                                 <div className="flex items-center justify-between">
-                                    <label htmlFor="" className="block text-sm font-medium leading-6 text-gray-900">
+                                    <label htmlFor="location" className="block text-sm font-medium leading-6 text-gray-900">
+
                                        Location 
                                     </label>
                                 </div>
@@ -129,7 +174,10 @@ export default function CreateProperty() {
                                         id="location"
                                         name="location"
                                         type="text"
-                                        required
+
+                                        value={pgDetail.location}
+                                        onChange={(e)=>setPgDetail({...pgDetail,[e.target.name]:e.target.value})}
+
                                         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 input-field"
                                     />
                                 </div>
@@ -145,6 +193,8 @@ export default function CreateProperty() {
                                         id="description"
                                         name="description"
                                         type="text"
+                                        value={pgDetail.description}
+                                        onChange={(e)=>setPgDetail({...pgDetail,[e.target.name]:e.target.value})}
                                         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 input-field"
                                     />
                                 </div>
@@ -152,6 +202,7 @@ export default function CreateProperty() {
                             <div>
                                 <button
                                     type="submit"
+                                    onClick={handleSubmit}
                                     className="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                                 >
                                     Create
@@ -162,6 +213,7 @@ export default function CreateProperty() {
                 </div>
             </div>
     </BackGround>
+    <Toaster />
     </>
   )
 }

@@ -63,7 +63,6 @@ export const Login = () => {
                 toast.error(data.errors, getToastOptions);
             }
             else if(data.status=="Pending"){
-
                 setVerify({
                     ...verify,userId:data.data.userId
                 })
@@ -76,14 +75,14 @@ export const Login = () => {
                 console.log(data);
                 localStorage.setItem('jwt_token', data.userAuthToken);
                 localStorage.setItem('user_id', data.data._id);
-                navigate('/home')
+                navigate('/search')
             }
         }
     };
 
     useEffect(()=>{
         if(token){
-            navigate(-1);
+            navigate("/search");
         }
         if(loginState!==null){
             if(loginState=="Pending")
