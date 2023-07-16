@@ -4,56 +4,57 @@ import { Link, useNavigate } from 'react-router-dom';
 import { BackGround } from './Backgroud';
 import axios from 'axios';
 
-export  default function UserPgDashboard (){
+export default function UserPgDashboard() {
     const token = localStorage.getItem('jwt_token')
     const userId = localStorage.getItem('user_id')
     const navigate = useNavigate();
     const [items, setItems] = useState([]);
 
-    const fetchAllPg = async ()=>{
-        const {data} = await axios.get(`http://localhost:5000/api/property/user/${userId}`);
-        if(data.status){
+    const fetchAllPg = async () => {
+        const { data } = await axios.get(`http://localhost:5000/api/property/user/${userId}`);
+        if (data.status) {
             setItems(data.data);
         }
     }
-    useEffect(()=>{
-        if(!token){
+    useEffect(() => {
+        if (!token) {
             navigate('/login');
         }
-        else{
+        else {
             fetchAllPg();
         }
     })
-  return (
-    <BackGround>
-    <>
-      <nav className="font-sans border-b-2 mb-4 border-x-2 flex  sm:flex-row items-center justify-between py-4 px-6 bg-white shadow  w-full">
-          <div className="mb-2 sm:mb-0">
-              <Link
-                  to="/"
-                  className="text-2xl no-underline text-grey-darkest hover:text-blue-dark"
-              >
-                  Pg Finder
-              </Link>
-          </div>
-          <div>
-              <Link
-                  to="/pg/create"
-                  className="text-lg no-underline text-grey-darkest hover:text-blue-dark ml-2"
-              >
-                  Add Pg
-              </Link>
-          </div>
-      </nav>
-  
-      <div className='px-4 mt-4 space-y-2'>
-      {
-          items.map((item, id)=>{
-              return(<Propertycard item={item} key={id} PropertyCardType={"Editable"}/>);
-          })
-      }
-      </div>
-  </>
-</BackGround>
-  )
+    return (
+        <BackGround>
+            <>
+                <nav className="border-b-2 mb-4 border-x-2 flex  sm:flex-row items-center justify-between py-4 px-6 bg-gray-200 w-full rounded-lg backdrop-filter backdrop-blur-sm bg-clip-text bg-opacity-80 ">
+                    <div className="mb-2 sm:mb-0 rounded-lg">
+                        <Link
+                            to="/"
+                            className="text-2xl no-underline text-indigo-600 hover:text-blue-dark font-bold"
+                        >
+                            pgFinder
+                        </Link>
+                    </div>
+                    <div>
+                        <Link
+                            to="/pg"
+                            className="font-medium text-lg no-underline text-grey-darkest hover:text-blue-dark ml-2"
+                        >
+                            Your PGs
+                        </Link>
+
+                    </div>
+                </nav>
+
+                <div className='px-4 mt-4 space-y-2'>
+                    {
+                        items.map((item, id) => {
+                            return (<Propertycard item={item} key={id} PropertyCardType={"Editable"} />);
+                        })
+                    }
+                </div>
+            </>
+        </BackGround>
+    )
 }

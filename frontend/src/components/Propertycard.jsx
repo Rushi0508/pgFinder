@@ -32,17 +32,17 @@ export const Propertycard = ({ item, PropertyCardType }) => {
     };
     return (
         <>
-        <div className='bg-slate-100 py-2 gap-x-4 rounded-md flex flex-col space-y-4 sm:flex-row sm:justify-start'>
-            <div className='sm:w-2/5 lg:w-1/3 flex items-center justify-center'>
+        <div className='bg-gray-100 py-2 gap-x-4 rounded-md flex flex-col space-y-4 sm:flex-row sm:justify-start bg-opacity-30'>
+            <div className='sm:w-2/5 lg:w-1/3 flex items-center justify-center p-3'>
                 <img className='rounded-md h-48 object-cover' src="https://c.ndtvimg.com/2023-07/nqtgiefo_virat-kohli-afp_625x300_14_July_23.jpg?im=FeatureCrop,algorithm=dnn,width=806,height=605" alt="" />
             </div>
-            <ul className=' space-y-3 sm:space-y-2'>
+            <ul className=' sm:space-y-2'>
                 <li className='flex justify-between'>
                     <span className='text-lg sm:text-xl font-semibold'>{title}</span>
-                    <span className='text-sm'>{price}$/{unit}</span>
+                    <span className='text-md font-medium'>{price}$/{unit}</span>
                 </li>
-                <li className='text-left'>{description}</li>
-                <li className='text-left'>{location}</li>
+                <li className='text-left  text-lg'>{description}</li>
+                <li className='text-left  text-lg'>{location}</li>
 
                 {/* {
                     PropertyCardType === "Readable" ? <li className='text-left sm:text-right'>
@@ -56,12 +56,12 @@ export const Propertycard = ({ item, PropertyCardType }) => {
                 <li className='flex justify-end gap-x-5 px-4'>
                         <button 
                         onClick={handleEditProperty}
-                        className='bg-indigo-600 px-4 py-2 rounded-md hover:bg-indigo-700 text-white text-xl'>
+                        className='bg-indigo-500 p-3 font-medium rounded-md hover:bg-indigo-600 text-white '>
                             Edit Property
                         </button>
                         <button 
                         onClick={handleRemoveProperty}
-                        className='bg-red-600 px-4 py-2 rounded-md hover:bg-red-700 text-white text-xl'>
+                        className='bg-red-500 p-3 rounded-md hover:bg-red-600 text-white  font-medium'>
                             Remove Property
                         </button>
                 </li>
