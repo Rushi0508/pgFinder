@@ -24,9 +24,19 @@ export default function UpdateProperty() {
         const bodyObject = {...UpdatePg, userId:userId};
         const {data} = await axios.put(
             `http://localhost:5000/api/property/edit/${ItemId}`,
-            bodyObject 
+            bodyObject,
+            {
+                headers: {
+                    Authorization: `${token}`,
+                }
+            }
         )
-        if(data.status){
+        if(data.loginRequired){
+            navigate('/login')
+            localStorage.removeItem('jwt_token')
+            localStorage.removeItem('user_id')
+        }
+        else if(data.status){
             toast.success("Your New Pg successfully updated", getToastOptions);
             setTimeout(() => {
                 navigate("/pg");

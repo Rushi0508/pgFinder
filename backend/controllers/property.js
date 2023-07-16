@@ -79,7 +79,6 @@ export const deleteProperty = async(req,res )=>{
 export const nearestProperty = async (req,res)=>{
     try{
         const {userId, latitude, longitude} = req.body;
-        console.log(req.body);
         const property = await Property.aggregate([
             {
                 $geoNear:{

@@ -4,16 +4,16 @@ import { isAuthenticated } from '../middleware';
 
 const router = express.Router();
 router.route('/api/property/nearest')
-    .post(nearestProperty)
+    .post(isAuthenticated, nearestProperty)
 router.route('/api/property/create')
-    .post(createProperty)
+    .post(isAuthenticated, createProperty)
 router.route('/api/property/edit/:id')
-    .put(editProperty)
+    .put(isAuthenticated, editProperty)
 router.route('/api/property/delete/:id')
-    .delete(deleteProperty)
+    .delete(isAuthenticated, deleteProperty)
 router.route('/api/property/user/:userId')
-    .get(getUserProperty)
+    .get(isAuthenticated, getUserProperty)
 router.route('/api/property/:id')
-    .get(getProperty)
+    .get(isAuthenticated, getProperty)
     
 export default router

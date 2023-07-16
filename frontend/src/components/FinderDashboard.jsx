@@ -21,12 +21,12 @@ export const FinderDashboard = () => {
                 }
             }
         )
-        setItems(data.data);
         if(data.loginRequired){
             navigate('/login')
             localStorage.removeItem('jwt_token')
             localStorage.removeItem('user_id')
         }
+        setItems(data.data);
     }
 
     useEffect(()=>{
